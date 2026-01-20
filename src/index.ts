@@ -9,4 +9,4 @@ export { buildPrompt, PromptParams } from '@core/prompt';
 
 // Infrastructure
 export { getConfig, updateConfig, Config } from '@infrastructure/config';
-export { sendToOllama } from '@infrastructure/ollamaClient';
+export { sendToOllama, checkConnection } from '@infrastructure/ollamaClient';
