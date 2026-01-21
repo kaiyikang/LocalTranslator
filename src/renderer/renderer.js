@@ -24,6 +24,32 @@ updateOllamaStatus()
 setInterval(updateOllamaStatus, 5000)
 
 // ============================================
+// Language Initialization
+// ============================================
+async function initLanguages() {
+  const languages = await window.api.getLanguages()
+  
+  languages.forEach(lang => {
+    // Add to source language (after "Detect Language")
+    const sourceOption = document.createElement('option')
+    sourceOption.value = lang.code
+    sourceOption.textContent = lang.name
+    elements.sourceLang.appendChild(sourceOption)
+    
+    // Add to target language
+    const targetOption = document.createElement('option')
+    targetOption.value = lang.code
+    targetOption.textContent = lang.name
+    elements.targetLang.appendChild(targetOption)
+  })
+  
+  // Default target language to English
+  elements.targetLang.value = 'en'
+}
+
+initLanguages()
+
+// ============================================
 // Translation
 // ============================================
 let debounceTimer = null
@@ -71,5 +97,5 @@ elements.copyBtn.addEventListener('click', () => {
   setTimeout(() => {
     elements.copyBtn.textContent = originalText
     elements.copyBtn.classList.remove('copied')
-  }, 1500)
+  }, 1000) 
 })

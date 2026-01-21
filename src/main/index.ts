@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import { getOllamaStatus } from '@usecase/checkStatus'
 import { translateText } from '@usecase/translateUseCase'
 import { copyToClipboard } from '@infrastructure/clipboard'
+import { getUniqueLanguages } from '@core/languages'
 import { join } from 'path'
 
 let mainWindow: BrowserWindow | null = null
@@ -37,6 +38,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('clipboard:copy', (_event, text: string) => {
     copyToClipboard(text)
+  })
+
+  ipcMain.handle('languages:get', () => {
+    return getUniqueLanguages()
   })
 
   createWindow()
