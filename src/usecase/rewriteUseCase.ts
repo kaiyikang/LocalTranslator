@@ -4,7 +4,7 @@
  */
 
 import { buildGrammarPrompt } from '@core/prompt';
-import { getLanguageByName } from '@core/language';
+import { getLanguageByName } from '@core/languages';
 import { sendToOllama } from '@infrastructure/ollamaClient';
 import { detectLanguage } from '@infrastructure/languageDetector';
 

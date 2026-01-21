@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;">
+    content="default-src 'self'; connect-src 'self' http://localhost:11434 http://127.0.0.1:11434; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:;">
   <title>Local Translator</title>
   <style>
     /* 全局重置 */
@@ -22,16 +22,18 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      /* 防止出现双重滚动条 */
     }
 
+    /* --- Header 修改开始 --- */
     header {
       padding: 15px 20px;
       border-bottom: 1px solid #333;
       background-color: #121212;
-      /* 确保头部不透明 */
       flex-shrink: 0;
-      /* 防止头部被压缩 */
+      /* 使用 Flexbox 实现 H1 居左，状态栏居右 */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     h1 {
@@ -41,18 +43,43 @@
       color: #ffffff;
     }
 
+    /* Ollama 状态栏样式 */
+    .ollama-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #9aa0a6;
+      background: #1e1e1e;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #333;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ff4444; /* 默认为红色（未连接） */
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .status-dot.connected {
+      background-color: #00cc00; /* 绿色（已连接） */
+      box-shadow: 0 0 8px rgba(0, 204, 0, 0.6);
+    }
+    /* --- Header 修改结束 --- */
+
     .container {
       display: flex;
       flex: 1;
       padding: 10px;
       gap: 10px;
       height: 100%;
-      /* 确保填满剩余高度 */
       min-height: 0;
-      /* Flexbox 嵌套滚动的关键 */
     }
 
-    /* 响应式布局 */
     @media (max-width: 700px) {
       .container {
         flex-direction: column;
@@ -75,7 +102,6 @@
       position: relative;
       transition: border-color 0.2s;
       min-width: 0;
-      /* 防止内容撑破 flex 容器 */
     }
 
     .panel:focus-within {
@@ -90,7 +116,6 @@
 
     select {
       background: #1e1e1e;
-      /* 明确背景色，防止系统默认样式干扰 */
       color: #9aa0a6;
       border: none;
       font-size: 14px;
@@ -143,6 +168,11 @@
 
   <header>
     <h1>Translator</h1>
+    
+    <div class="ollama-status">
+      <span>Ollama Connectivity</span>
+      <div id="status-dot" class="status-dot"></div>
+    </div>
   </header>
 
   <div class="container">
@@ -171,6 +201,34 @@
     </div>
   </div>
 
+  <script>
+    const statusDot = document.getElementById('status-dot');
+
+    async function updateStatus() {
+      // 调用 Preload 中暴露的 API，而不是直接 Fetch
+      // 注意：你需要确保 window.api 在 TypeScript 定义中存在，或者这里作为 JS 运行
+      const isConnected = await window.api.checkOllamaStatus();
+      
+      if (isConnected) {
+        statusDot.classList.add('connected');
+      } else {
+        statusDot.classList.remove('connected');
+      }
+    }
+
+    // 立即运行一次
+    updateStatus();
+
+    // 每 5 秒轮询一次 (减轻 IPC 通信压力，可以比纯前端 Fetch 间隔稍长)
+    setInterval(updateStatus, 5000);
+
+    // Copy 按钮逻辑
+    document.getElementById('copy-btn').addEventListener('click', () => {
+       const output = document.getElementById('output-text');
+       output.select();
+       document.execCommand('copy');
+    });
+  </script>
 </body>
 
 </html>
