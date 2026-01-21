@@ -2,7 +2,7 @@
   "name": "local-translator",
   "version": "1.0.0",
   "description": "A modular translator using Ollama",
-  "main": "electron.js",
+  "main": "src/electron.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
