@@ -4,7 +4,7 @@
  */
 
 import { translateText } from './usecase/translateUseCase';
-import { detectLanguage } from './infrastructure/languageDetectionService';
+import { detectLanguage } from './infrastructure/languageDetector';
 import { getClipboardText } from './infrastructure/clipboard';
 
 async function main() {

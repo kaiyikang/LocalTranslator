@@ -4,10 +4,10 @@
  */
 
 import { buildPrompt } from '@core/prompt';
-import { getLanguageByName } from '@core/languageDetector';
+import { getLanguageByName } from '@core/language';
 import { sendToOllama } from '@infrastructure/ollamaClient';
 import { getConfig } from '@infrastructure/config';
-import { detectLanguage } from '@infrastructure/languageDetectionService';
+import { detectLanguage } from '@infrastructure/languageDetector';
 
 export interface TranslateInput {
     text: string;

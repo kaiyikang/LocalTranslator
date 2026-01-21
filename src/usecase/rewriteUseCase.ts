@@ -4,9 +4,9 @@
  */
 
 import { buildGrammarPrompt } from '@core/prompt';
-import { getLanguageByName } from '@core/languageDetector';
+import { getLanguageByName } from '@core/language';
 import { sendToOllama } from '@infrastructure/ollamaClient';
-import { detectLanguage } from '@infrastructure/languageDetectionService';
+import { detectLanguage } from '@infrastructure/languageDetector';
 
 export interface RewriteInput {
     text: string;
