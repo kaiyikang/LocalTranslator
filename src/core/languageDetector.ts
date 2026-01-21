@@ -1,37 +1,53 @@
 /**
  * Core - Language Detector
- * Detects input text language using Unicode patterns
+ * Detects input text language using franc library (186 languages supported)
  */
+
+import { franc } from 'franc';
+import { SUPPORTED_LANGUAGES } from '@core/languages';
 
 export interface LanguageInfo {
   code: string;
   name: string;
 }
 
-const patterns: { pattern: RegExp; info: LanguageInfo }[] = [
-  { pattern: /[\u4e00-\u9fff]/, info: { code: 'zh', name: 'Chinese' } },
-  { pattern: /[\u3040-\u309f\u30a0-\u30ff]/, info: { code: 'ja', name: 'Japanese' } },
-  { pattern: /[\uac00-\ud7af]/, info: { code: 'ko', name: 'Korean' } },
-  { pattern: /[\u0400-\u04ff]/, info: { code: 'ru', name: 'Russian' } },
-  { pattern: /[\u0600-\u06ff]/, info: { code: 'ar', name: 'Arabic' } },
-  { pattern: /[äöüß]/i, info: { code: 'de', name: 'German' } },
-  { pattern: /[àâçéèêëîïôùûü]/i, info: { code: 'fr', name: 'French' } },
-  { pattern: /[áéíóúñü¿¡]/i, info: { code: 'es', name: 'Spanish' } },
-];
-
 const defaultLang: LanguageInfo = { code: 'en', name: 'English' };
 
+/**
+ * Detect language of given text using franc
+ * @param text Text to detect language from
+ * @returns Language information with code and name
+ */
 export function detectLanguage(text: string): LanguageInfo {
   if (!text?.trim()) return defaultLang;
 
-  for (const { pattern, info } of patterns) {
-    if (pattern.test(text)) return info;
+  // Use franc to detect language (returns ISO 639-3 code)
+  const detectedCode = franc(text, { minLength: 3 });
+
+  // If detection failed or returned 'und' (undetermined)
+  if (!detectedCode || detectedCode === 'und') {
+    return defaultLang;
   }
-  return defaultLang;
+
+  // Try to find in SUPPORTED_LANGUAGES by code
+  const found = SUPPORTED_LANGUAGES.find((lang) =>
+    lang.code === detectedCode || lang.code.startsWith(detectedCode)
+  );
+
+  if (found) return found;
+
+  // Return detected code with generic name if not in our supported list
+  return { code: detectedCode, name: detectedCode.toUpperCase() };
 }
 
+/**
+ * Get language info by name
+ * @param name Language name to search for
+ * @returns Language information or null if not found
+ */
 export function getLanguageByName(name: string): LanguageInfo | null {
-  if (name.toLowerCase() === 'english') return defaultLang;
-  const found = patterns.find((p) => p.info.name.toLowerCase() === name.toLowerCase());
-  return found?.info || null;
+  const found = SUPPORTED_LANGUAGES.find((lang) =>
+    lang.name.toLowerCase() === name.toLowerCase()
+  );
+  return found || null;
 }
