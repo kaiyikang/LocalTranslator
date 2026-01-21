@@ -59,5 +59,17 @@ elements.targetLang.addEventListener('change', translate)
 // ============================================
 elements.copyBtn.addEventListener('click', () => {
   const text = elements.outputText.value
-  if (text) window.api.copyToClipboard(text)
+  if (!text) return
+
+  window.api.copyToClipboard(text)
+  
+  // Show "Copied!" feedback
+  const originalText = elements.copyBtn.textContent
+  elements.copyBtn.textContent = 'Copied!'
+  elements.copyBtn.classList.add('copied')
+  
+  setTimeout(() => {
+    elements.copyBtn.textContent = originalText
+    elements.copyBtn.classList.remove('copied')
+  }, 1500)
 })
