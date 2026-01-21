@@ -1,54 +1,67 @@
 # LocalTranslator
 
-A simple, modular translator using Ollama for local translation.
+A simple, modular translator using Ollama for local translation. Built with **Electron** and **electron-vite** for hot reload development.
 
 ## Project Structure
 
 ```
 src/
-├── config.ts          # Configuration module (Ollama settings)
-├── client.ts          # Ollama client (sends prompts, returns text)
-├── languageDetector.ts # Language auto-detection
-├── prompt.ts          # Prompt template builder
-├── translator.ts      # Main translator logic
-├── index.ts           # Entry point (exports all modules)
-└── example.ts         # Usage examples
+├── main/               # Electron main process
+│   └── index.ts
+├── preload/            # Preload scripts
+│   └── index.ts
+├── renderer/           # UI (HTML/CSS/JS)
+│   └── index.html
+├── core/               # Core domain logic
+│   ├── languages.ts    # Supported languages
+│   └── prompt.ts       # Prompt templates
+├── usecase/            # Application use cases
+│   ├── translateUseCase.ts
+│   └── checkStatus.ts
+└── infrastructure/     # External services
+    ├── config.ts       # Ollama configuration
+    ├── ollamaClient.ts # Ollama API client
+    └── languageDetector.ts
 ```
+
+## Requirements
+
+- Node.js 20.19+ or 22.12+
+- Ollama running locally
+- translategemma model: `ollama run translategemma`
 
 ## Installation
 
 ```bash
 npm install
-npm run build
 ```
 
-## Requirements
+## Development
 
-- Node.js 18+
-- Ollama running locally
-- translategemma model: `ollama run translategemma`
+```bash
+npm run dev     # Start with hot reload
+```
+
+## Build
+
+```bash
+npm run build   # Build for production
+npm start       # Preview production build
+```
 
 ## Usage
 
 ### Basic Translation
 
 ```typescript
-import { Translator } from "local-translator";
+import { translateText } from "local-translator";
 
-const translator = new Translator();
-
-// Translate with auto language detection
-const result = await translator.translate("Hello, world!", {
+const result = await translateText({
+  text: "Hello, world!",
   targetLang: "Chinese",
 });
 
 console.log(result.translated);
-```
-
-### Quick Translate
-
-```typescript
-const translated = await translator.quickTranslate("Good morning!", "Chinese");
 ```
 
 ### Language Detection
@@ -60,36 +73,13 @@ const lang = detectLanguage("你好");
 console.log(lang); // { code: 'zh', name: 'Chinese' }
 ```
 
-### Custom Configuration
+## Path Aliases
 
-```typescript
-import { Translator, updateConfig } from "local-translator";
+This project uses path aliases for clean imports:
 
-// Update global config
-updateConfig({
-  ollama: {
-    baseUrl: "http://localhost:11434",
-    model: "translategemma",
-    timeout: 60000,
-  },
-  defaultTargetLang: "English",
-});
-
-// Or create with custom config
-const translator = new Translator({
-  defaultTargetLang: "Japanese",
-});
-```
-
-## Modules
-
-| Module                | Description                        |
-| --------------------- | ---------------------------------- |
-| `config.ts`           | Ollama configuration with defaults |
-| `client.ts`           | HTTP client for Ollama API         |
-| `languageDetector.ts` | Unicode-based language detection   |
-| `prompt.ts`           | Translation prompt template        |
-| `translator.ts`       | Main translation orchestrator      |
+- `@core/*` → `src/core/*`
+- `@usecase/*` → `src/usecase/*`
+- `@infrastructure/*` → `src/infrastructure/*`
 
 ## License
 

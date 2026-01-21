@@ -1,0 +1,161 @@
+/* 全局重置 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #121212;
+  color: #e0e0e0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+  background-color: #121212;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* Ollama 状态栏 */
+.ollama-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #9aa0a6;
+  background: #1e1e1e;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #333;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ff4444;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.status-dot.connected {
+  background-color: #00cc00;
+  box-shadow: 0 0 8px rgba(0, 204, 0, 0.6);
+}
+
+/* Container */
+.container {
+  display: flex;
+  flex: 1;
+  padding: 10px;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+
+@media (max-width: 700px) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 701px) {
+  .container {
+    flex-direction: row;
+  }
+}
+
+/* Panel */
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  border: 1px solid #333;
+  position: relative;
+  transition: border-color 0.2s;
+  min-width: 0;
+}
+
+.panel:focus-within {
+  border-color: #555;
+}
+
+/* Toolbar */
+.toolbar {
+  padding: 10px 15px;
+  border-bottom: 1px solid #333;
+  flex-shrink: 0;
+}
+
+select {
+  background: #1e1e1e;
+  color: #9aa0a6;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+
+select:hover {
+  color: #fff;
+}
+
+/* Textarea */
+textarea {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 15px;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+}
+
+/* Copy Button */
+.copy-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.copy-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+}
