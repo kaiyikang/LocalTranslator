@@ -1,12 +1,17 @@
 /**
- * LocalTranslator - Main Entry Point
+ * Main entry point - exports use cases and domain entities
  */
 
-// Core
-export { translate, TranslateResult } from '@core/translator';
-export { detectLanguage, getLanguageByName, LanguageInfo } from '@core/languageDetector';
-export { buildPrompt, PromptParams } from '@core/prompt';
+// Use Cases (Application Layer)
+export { translateText, TranslateInput, TranslateOutput } from './usecase/translateUseCase';
+export { rewriteText, RewriteInput, RewriteOutput } from './usecase/rewriteUseCase';
 
-// Infrastructure
-export { getConfig, updateConfig, Config } from '@infrastructure/config';
-export { sendToOllama, checkConnection } from '@infrastructure/ollamaClient';
+// Core Domain
+export { LanguageInfo, getLanguageByName, getLanguageByCode, getAllLanguages } from './core/languageDetector';
+export { SUPPORTED_LANGUAGES } from './core/languages';
+export { buildPrompt, buildGrammarPrompt, PromptParams } from './core/prompt';
+
+// Infrastructure (for advanced usage)
+export { getConfig, updateConfig, Config } from './infrastructure/config';
+export { sendToOllama, checkConnection } from './infrastructure/ollamaClient';
+export { detectLanguage } from './infrastructure/languageDetectionService';
