@@ -5,8 +5,9 @@ let mainWindow;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 800,
+        width: 300,
         height: 600,
+        backgroundColor: '#121212',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
