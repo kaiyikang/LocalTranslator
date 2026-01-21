@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { getOllamaStatus } from '@usecase/checkStatus'
 import { translateText } from '@usecase/translateUseCase'
+import { copyToClipboard } from '@infrastructure/clipboard'
 import { join } from 'path'
 
 let mainWindow: BrowserWindow | null = null
@@ -32,6 +33,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('translate:text', async (_event, input) => {
     return await translateText(input)
+  })
+
+  ipcMain.handle('clipboard:copy', (_event, text: string) => {
+    copyToClipboard(text)
   })
 
   createWindow()

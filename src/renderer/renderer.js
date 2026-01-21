@@ -1,58 +1,63 @@
-const statusDot = document.getElementById('status-dot')
-const inputText = document.getElementById('input-text')
-const outputText = document.getElementById('output-text')
-const sourceLang = document.getElementById('source-lang')
-const targetLang = document.getElementById('target-lang')
+// ============================================
+// DOM Elements
+// ============================================
+const $ = (id) => document.getElementById(id)
 
-async function updateStatus() {
-  const isConnected = await window.api.checkOllamaStatus()
-  
-  if (isConnected) {
-    statusDot.classList.add('connected')
-  } else {
-    statusDot.classList.remove('connected')
-  }
+const elements = {
+  statusDot: $('status-dot'),
+  inputText: $('input-text'),
+  outputText: $('output-text'),
+  sourceLang: $('source-lang'),
+  targetLang: $('target-lang'),
+  copyBtn: $('copy-btn')
 }
 
-// 立即运行一次
-updateStatus()
+// ============================================
+// Ollama Status
+// ============================================
+async function updateOllamaStatus() {
+  const isConnected = await window.api.checkOllamaStatus()
+  elements.statusDot.classList.toggle('connected', isConnected)
+}
 
-// 每 5 秒轮询一次
-setInterval(updateStatus, 5000)
+updateOllamaStatus()
+setInterval(updateOllamaStatus, 5000)
 
-// Copy 按钮逻辑
-document.getElementById('copy-btn').addEventListener('click', () => {
-  const output = document.getElementById('output-text')
-  output.select()
-  document.execCommand('copy')
-})
-
-// 翻译逻辑 (防抖)
+// ============================================
+// Translation
+// ============================================
 let debounceTimer = null
 
-async function doTranslate() {
-  const text = inputText.value.trim()
+async function translate() {
+  const text = elements.inputText.value.trim()
   if (!text) {
-    outputText.value = ''
+    elements.outputText.value = ''
     return
   }
-  
+
   try {
     const result = await window.api.translateText(
       text,
-      sourceLang.value,
-      targetLang.value
+      elements.sourceLang.value,
+      elements.targetLang.value
     )
-    outputText.value = result.translated
+    elements.outputText.value = result.translated
   } catch (error) {
-    outputText.value = 'Translation failed: ' + error.message
+    elements.outputText.value = 'Translation failed: ' + error.message
   }
 }
 
-inputText.addEventListener('input', () => {
+elements.inputText.addEventListener('input', () => {
   clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(doTranslate, 500)
+  debounceTimer = setTimeout(translate, 500)
 })
 
-// 目标语言改变时重新翻译
-targetLang.addEventListener('change', doTranslate)
+elements.targetLang.addEventListener('change', translate)
+
+// ============================================
+// Clipboard
+// ============================================
+elements.copyBtn.addEventListener('click', () => {
+  const text = elements.outputText.value
+  if (text) window.api.copyToClipboard(text)
+})
