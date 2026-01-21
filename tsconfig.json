@@ -2,24 +2,40 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020"],
+    "lib": [
+      "ES2020"
+    ],
+    "types": [
+      "node"
+    ],
     "declaration": true,
     "strict": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
-      "@core/*": ["core/*"],
-      "@infrastructure/*": ["infrastructure/*"]
+      "@core/*": [
+        "core/*"
+      ],
+      "@infrastructure/*": [
+        "infrastructure/*"
+      ]
     },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    "require": [
+      "tsconfig-paths/register"
+    ]
   }
 }
