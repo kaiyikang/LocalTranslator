@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { getOllamaStatus } from '@usecase/checkStatus'
-import { translateText } from '@usecase/translate'
+import { processText } from '@usecase/processText'
 import { copyToClipboard } from '@infrastructure/clipboard'
 import { getUniqueLanguages } from '@core/languages'
 import { join } from 'path'
@@ -32,8 +32,8 @@ app.whenReady().then(() => {
     return await getOllamaStatus()
   })
 
-  ipcMain.handle('translate:text', async (_event, input) => {
-    return await translateText(input)
+  ipcMain.handle('text:process', async (_event, input) => {
+    return await processText(input)
   })
 
   ipcMain.handle('clipboard:copy', (_event, text: string) => {

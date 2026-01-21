@@ -50,11 +50,11 @@ async function initLanguages() {
 initLanguages()
 
 // ============================================
-// Translation
+// Text Processing (Translate / Rewrite)
 // ============================================
 let debounceTimer = null
 
-async function translate() {
+async function process() {
   const text = elements.inputText.value.trim()
   if (!text) {
     elements.outputText.value = ''
@@ -62,23 +62,23 @@ async function translate() {
   }
 
   try {
-    const result = await window.api.translateText(
+    const { result } = await window.api.processText(
       text,
       elements.sourceLang.value,
       elements.targetLang.value
     )
-    elements.outputText.value = result.translated
+    elements.outputText.value = result
   } catch (error) {
-    elements.outputText.value = 'Translation failed: ' + error.message
+    elements.outputText.value = 'Failed: ' + error.message
   }
 }
 
 elements.inputText.addEventListener('input', () => {
   clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(translate, 500)
+  debounceTimer = setTimeout(process, 500)
 })
 
-elements.targetLang.addEventListener('change', translate)
+elements.targetLang.addEventListener('change', process)
 
 // ============================================
 // Clipboard
