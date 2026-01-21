@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { getOllamaStatus } from '@usecase/checkStatus'
+import { translateText } from '@usecase/translateUseCase'
 import { join } from 'path'
 
 let mainWindow: BrowserWindow | null = null
@@ -27,6 +28,10 @@ function createWindow() {
 app.whenReady().then(() => {
   ipcMain.handle('ollama:check-status', async () => {
     return await getOllamaStatus()
+  })
+
+  ipcMain.handle('translate:text', async (_event, input) => {
+    return await translateText(input)
   })
 
   createWindow()

@@ -4,10 +4,13 @@ import { resolve } from 'path'
 export default defineConfig({
   main: {
     build: {
+      lib: {
+        entry: resolve(__dirname, 'src/main/index.ts'),
+        formats: ['es'],
+        fileName: () => 'index.mjs'
+      },
       rollupOptions: {
-        input: {
-          index: resolve(__dirname, 'src/main/index.ts')
-        }
+        external: ['electron']
       }
     },
     resolve: {
