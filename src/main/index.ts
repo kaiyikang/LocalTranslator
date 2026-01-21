@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { getOllamaStatus } from '@usecase/checkStatus'
-import { translateText } from '@usecase/translateUseCase'
+import { translateText } from '@usecase/translate'
 import { copyToClipboard } from '@infrastructure/clipboard'
 import { getUniqueLanguages } from '@core/languages'
 import { join } from 'path'
