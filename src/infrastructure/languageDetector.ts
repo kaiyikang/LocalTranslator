@@ -3,6 +3,7 @@
  * Uses eld (Efficient Language Detector) for automatic language detection
  */
 
+// @ts-expect-error - eld is an ESM module, but works fine with our build setup
 import eld from 'eld/medium';
 import { SUPPORTED_LANGUAGES } from '@core/languages';
 
