@@ -27,7 +27,7 @@ export interface PromptParams {
   targetLang: string;
   targetCode: string;
   text: string;
-  template?: string; // Optional custom template, uses default if not provided
+  template?: string;
 }
 
 export function buildPrompt(params: PromptParams): string {
@@ -58,7 +58,7 @@ export interface GrammarPromptParams {
   lang: string;
   langCode: string;
   text: string;
-  template?: string; // Optional custom template, uses default if not provided
+  template?: string;
 }
 
 export function buildGrammarPrompt(params: GrammarPromptParams): string {

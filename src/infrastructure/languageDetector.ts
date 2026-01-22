@@ -1,9 +1,9 @@
 /**
  * Infrastructure - Language Detection Service
- * Uses franc library for automatic language detection
+ * Uses eld (Efficient Language Detector) for automatic language detection
  */
 
-import { franc } from 'franc';
+import eld from 'eld/medium';
 import { SUPPORTED_LANGUAGES } from '@core/languages';
 
 export interface LanguageInfo {
@@ -14,67 +14,46 @@ export interface LanguageInfo {
 const DEFAULT_LANG: LanguageInfo = { code: 'en', name: 'English' };
 
 /**
- * Mapping from ISO 639-3 (three-letter codes used by franc) 
- * to ISO 639-1 (two-letter codes used in SUPPORTED_LANGUAGES)
- */
-const ISO_639_3_TO_639_1: Record<string, string> = {
-    'eng': 'en',  // English
-    'cmn': 'zh',  // Chinese (Mandarin)
-    'jpn': 'ja',  // Japanese
-    'kor': 'ko',  // Korean
-    'spa': 'es',  // Spanish
-    'fra': 'fr',  // French
-    'deu': 'de',  // German
-    'ita': 'it',  // Italian
-    'por': 'pt',  // Portuguese
-    'rus': 'ru',  // Russian
-    'ara': 'ar',  // Arabic
-    'hin': 'hi',  // Hindi
-    'tha': 'th',  // Thai
-    'vie': 'vi',  // Vietnamese
-    'ind': 'id',  // Indonesian
-    'msa': 'ms',  // Malay
-    'nld': 'nl',  // Dutch
-    'pol': 'pl',  // Polish
-    'tur': 'tr',  // Turkish
-    'ukr': 'uk',  // Ukrainian
-    'ces': 'cs',  // Czech
-    'swe': 'sv',  // Swedish
-    'dan': 'da',  // Danish
-    'fin': 'fi',  // Finnish
-    'ell': 'el',  // Greek
-    'heb': 'he',  // Hebrew
-    'hun': 'hu',  // Hungarian
-    'ron': 'ro',  // Romanian
-    'nor': 'no',  // Norwegian
-};
-
-/**
- * Detect language of given text using franc
+ * Detect language of given text using eld
  * @param text Text to detect language from
  * @returns Language information with code and name
  */
 export function detectLanguage(text: string): LanguageInfo {
 
-    if (!text?.trim()) return DEFAULT_LANG;
+    // Log input for debugging
+    const truncatedText = text?.length > 50 ? text.substring(0, 50) + '...' : text;
+    console.log('[LanguageDetector] Input text:', truncatedText);
 
-    // Use franc to detect language (returns ISO 639-3 code)
-    const detectedCode = franc(text, { minLength: 3 });
-
-    if (!detectedCode || detectedCode === 'und') {
+    if (!text?.trim()) {
+        console.log('[LanguageDetector] Empty text, returning default:', DEFAULT_LANG);
         return DEFAULT_LANG;
     }
 
-    // Convert ISO 639-3 to ISO 639-1 if mapping exists
-    const normalizedCode = ISO_639_3_TO_639_1[detectedCode] || detectedCode;
+    // Use eld to detect language (returns ISO 639-1 code directly)
+    const detectedCode = eld.detect(text);
+    console.log('[LanguageDetector] ELD detected:', detectedCode);
 
-    // Try to find in SUPPORTED_LANGUAGES by normalized code
+    // Handle cases where eld returns empty string or no result
+    if (!detectedCode || !detectedCode.language || detectedCode.language.trim() === '') {
+        console.log('[LanguageDetector] No valid detection, returning default:', DEFAULT_LANG);
+        return DEFAULT_LANG;
+    }
+
+    // Try to find in SUPPORTED_LANGUAGES
     const found = SUPPORTED_LANGUAGES.find((lang) =>
-        lang.code === normalizedCode || normalizedCode.startsWith(lang.code)
+        lang.code === detectedCode.language
     );
 
-    if (found) return found;
+    if (found) {
+        console.log('[LanguageDetector] Found in supported languages:', found);
+        return found;
+    }
 
     // Return detected code with generic name if not in our supported list
-    return { code: normalizedCode, name: normalizedCode.toUpperCase() };
+    const result = {
+        code: detectedCode.language,
+        name: detectedCode.language.toUpperCase()
+    };
+    console.log('[LanguageDetector] Not in supported list, returning:', result);
+    return result;
 }

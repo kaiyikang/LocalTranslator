@@ -29,6 +29,6 @@
     "vitest": "^4.0.17"
   },
   "dependencies": {
-    "franc": "^6.2.0"
+    "eld": "^2.0.2"
   }
 }
