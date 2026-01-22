@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { getOllamaStatus } from '@usecase/checkStatus'
 import { processText } from '@usecase/processText'
 import { getSupportedLanguages, detectLanguageFromText } from '@usecase/getSupportedLanguages'
@@ -20,7 +20,6 @@ function createWindow() {
     }
   })
 
-  // In development, load from dev server; in production, load static file
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']!)
   } else {
@@ -29,41 +28,30 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('ollama:check-status', async () => {
-    return await getOllamaStatus()
-  })
-
-  ipcMain.handle('text:process', async (_event, input) => {
-    return await processText(input)
-  })
-
-  ipcMain.handle('clipboard:copy', (_event, text: string) => {
-    copyToClipboard(text)
-  })
-
-  ipcMain.handle('clipboard:read', () => {
-    return readFromClipboard()
-  })
-
-  ipcMain.handle('languages:get', () => {
-    return getSupportedLanguages()
-  })
-
-  ipcMain.handle('language:detect', (_event, text: string) => {
-    return detectLanguageFromText(text)
-  })
+  ipcMain.handle('ollama:check-status', async () => getOllamaStatus())
+  ipcMain.handle('text:process', async (_event, input) => processText(input))
+  ipcMain.handle('clipboard:copy', (_event, text: string) => copyToClipboard(text))
+  ipcMain.handle('clipboard:read', () => readFromClipboard())
+  ipcMain.handle('languages:get', () => getSupportedLanguages())
+  ipcMain.handle('language:detect', (_event, text: string) => detectLanguageFromText(text))
 
   createWindow()
+
+  // Global shortcut: Ctrl+Shift+C to paste clipboard to input
+  globalShortcut.register('CommandOrControl+D', () => {
+    const text = readFromClipboard()
+    if (mainWindow && text) {
+      mainWindow.webContents.send('clipboard:paste-to-input', text)
+    }
+  })
 })
 
+app.on('will-quit', () => globalShortcut.unregisterAll())
+
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  if (process.platform !== 'darwin') app.quit()
 })
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
+  if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })

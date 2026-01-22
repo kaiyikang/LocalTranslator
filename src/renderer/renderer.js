@@ -180,3 +180,11 @@ elements.copyBtn.addEventListener('click', () => {
     elements.copyBtn.classList.remove('copied')
   }, 1000)
 })
+
+// ============================================
+// Global Shortcut: Double Ctrl+C to paste clipboard to input
+// ============================================
+window.api.onClipboardPaste((text) => {
+  elements.inputText.value = text
+  process() // Trigger translation
+})
