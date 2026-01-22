@@ -23,20 +23,16 @@ export function detectLanguage(text: string): LanguageInfo {
 
     // Log input for debugging
     const truncatedText = text?.length > 50 ? text.substring(0, 50) + '...' : text;
-    console.log('[LanguageDetector] Input text:', truncatedText);
 
     if (!text?.trim()) {
-        console.log('[LanguageDetector] Empty text, returning default:', DEFAULT_LANG);
         return DEFAULT_LANG;
     }
 
     // Use eld to detect language (returns ISO 639-1 code directly)
     const detectedCode = eld.detect(text);
-    console.log('[LanguageDetector] ELD detected:', detectedCode);
 
     // Handle cases where eld returns empty string or no result
     if (!detectedCode || !detectedCode.language || detectedCode.language.trim() === '') {
-        console.log('[LanguageDetector] No valid detection, returning default:', DEFAULT_LANG);
         return DEFAULT_LANG;
     }
 
@@ -46,7 +42,6 @@ export function detectLanguage(text: string): LanguageInfo {
     );
 
     if (found) {
-        console.log('[LanguageDetector] Found in supported languages:', found);
         return found;
     }
 
@@ -55,6 +50,5 @@ export function detectLanguage(text: string): LanguageInfo {
         code: detectedCode.language,
         name: detectedCode.language.toUpperCase()
     };
-    console.log('[LanguageDetector] Not in supported list, returning:', result);
     return result;
 }
