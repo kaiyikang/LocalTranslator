@@ -3,6 +3,7 @@ import { getOllamaStatus } from '@usecase/checkStatus'
 import { processText } from '@usecase/processText'
 import { getSupportedLanguages, detectLanguageFromText } from '@usecase/getSupportedLanguages'
 import { copyToClipboard } from '@usecase/copyToClipboard'
+import { readFromClipboard } from '@usecase/readFromClipboard'
 import { join } from 'path'
 
 let mainWindow: BrowserWindow | null = null
@@ -38,6 +39,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('clipboard:copy', (_event, text: string) => {
     copyToClipboard(text)
+  })
+
+  ipcMain.handle('clipboard:read', () => {
+    return readFromClipboard()
   })
 
   ipcMain.handle('languages:get', () => {
