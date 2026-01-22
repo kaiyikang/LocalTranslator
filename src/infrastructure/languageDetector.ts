@@ -24,7 +24,6 @@ export function detectLanguage(text: string): LanguageInfo {
     // Use franc to detect language (returns ISO 639-3 code)
     const detectedCode = franc(text, { minLength: 3 });
 
-    // If detection failed or returned 'und' (undetermined)
     if (!detectedCode || detectedCode === 'und') {
         return defaultLang;
     }
@@ -34,10 +33,7 @@ export function detectLanguage(text: string): LanguageInfo {
         lang.code === detectedCode || lang.code.startsWith(detectedCode)
     );
 
-    if (found) {
-        console.debug(`Language detection: Resolved to supported language: ${found.name} (${found.code})`);
-        return found;
-    }
+    if (found) return found;
 
     // Return detected code with generic name if not in our supported list
     return { code: detectedCode, name: detectedCode.toUpperCase() };
