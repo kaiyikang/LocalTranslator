@@ -28,21 +28,21 @@ setInterval(updateOllamaStatus, 5000)
 // ============================================
 async function initLanguages() {
   const languages = await window.api.getLanguages()
-  
+
   languages.forEach(lang => {
     // Add to source language (after "Detect Language")
     const sourceOption = document.createElement('option')
     sourceOption.value = lang.code
     sourceOption.textContent = lang.name
     elements.sourceLang.appendChild(sourceOption)
-    
+
     // Add to target language
     const targetOption = document.createElement('option')
     targetOption.value = lang.code
     targetOption.textContent = lang.name
     elements.targetLang.appendChild(targetOption)
   })
-  
+
   // Default target language to English
   elements.targetLang.value = 'en'
 }
@@ -58,8 +58,14 @@ async function process() {
   const text = elements.inputText.value.trim()
   if (!text) {
     elements.outputText.value = ''
+    elements.outputText.classList.remove('loading')
     return
   }
+
+  // Show loading state
+  elements.outputText.value = ''
+  elements.outputText.classList.add('loading')
+  elements.outputText.placeholder = 'Processing...'
 
   try {
     const { result } = await window.api.processText(
@@ -70,6 +76,10 @@ async function process() {
     elements.outputText.value = result
   } catch (error) {
     elements.outputText.value = 'Failed: ' + error.message
+  } finally {
+    // Remove loading state
+    elements.outputText.classList.remove('loading')
+    elements.outputText.placeholder = 'Translation...'
   }
 }
 
@@ -88,14 +98,14 @@ elements.copyBtn.addEventListener('click', () => {
   if (!text) return
 
   window.api.copyToClipboard(text)
-  
+
   // Show "Copied!" feedback
   const originalText = elements.copyBtn.textContent
   elements.copyBtn.textContent = 'Copied!'
   elements.copyBtn.classList.add('copied')
-  
+
   setTimeout(() => {
     elements.copyBtn.textContent = originalText
     elements.copyBtn.classList.remove('copied')
-  }, 1000) 
+  }, 1000)
 })

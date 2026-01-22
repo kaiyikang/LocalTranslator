@@ -1,8 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { getOllamaStatus } from '@usecase/checkStatus'
 import { processText } from '@usecase/processText'
-import { copyToClipboard } from '@infrastructure/clipboard'
-import { getUniqueLanguages } from '@core/languages'
+import { getSupportedLanguages } from '@usecase/getSupportedLanguages'
+import { copyToClipboard } from '@usecase/copyToClipboard'
 import { join } from 'path'
 
 let mainWindow: BrowserWindow | null = null
@@ -41,7 +41,7 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle('languages:get', () => {
-    return getUniqueLanguages()
+    return getSupportedLanguages()
   })
 
   createWindow()
