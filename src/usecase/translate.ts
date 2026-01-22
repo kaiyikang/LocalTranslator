@@ -4,15 +4,16 @@
  */
 
 import { buildPrompt } from '@core/prompt';
-import { getLanguageByName } from '@core/languages';
+import { getLanguageByCode } from '@core/languages';
 import { sendToOllama } from '@infrastructure/ollamaClient';
 import { getConfig } from '@infrastructure/config';
 import { detectLanguage } from '@infrastructure/languageDetector';
 
 export interface TranslateInput {
     text: string;
-    sourceLang?: string;
-    targetLang?: string;
+    autoDetect: boolean;      // 明确的自动检测标志
+    sourceLang?: string;      // 语言代码（如 'en', 'zh'），仅在 autoDetect=false 时使用
+    targetLang: string;       // 目标语言代码，必需
 }
 
 export interface TranslateOutput {
@@ -26,20 +27,28 @@ export interface TranslateOutput {
  * Translate text from source language to target language
  */
 export async function translateText(input: TranslateInput): Promise<TranslateOutput> {
-    const { text, sourceLang: sourceName, targetLang: targetName } = input;
-    const config = getConfig();
+    const { text, autoDetect, sourceLang, targetLang } = input;
 
-    // Determine source language
-    const source =
-        sourceName && sourceName !== 'auto'
-            ? getLanguageByName(sourceName) || detectLanguage(text)
-            : detectLanguage(text);
+    // Determine source language - 逻辑更加清晰
+    let source;
+    if (autoDetect) {
+        // 自动检测模式：忽略 sourceLang，直接检测
+        source = detectLanguage(text);
+    } else {
+        // 手动模式：使用提供的 sourceLang
+        if (!sourceLang) {
+            throw new Error('sourceLang is required when autoDetect is false');
+        }
+        source = getLanguageByCode(sourceLang) || {
+            code: sourceLang,
+            name: sourceLang.toUpperCase()
+        };
+    }
 
     // Determine target language
-    const targetNameResolved = targetName || config.defaultTargetLang;
-    const target = getLanguageByName(targetNameResolved) || {
-        code: targetNameResolved.substring(0, 2).toLowerCase(),
-        name: targetNameResolved,
+    const target = getLanguageByCode(targetLang) || {
+        code: targetLang,
+        name: targetLang.toUpperCase()
     };
 
     // Build and send prompt
