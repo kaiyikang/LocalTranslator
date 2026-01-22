@@ -9,7 +9,8 @@ const elements = {
   outputText: $('output-text'),
   sourceLang: $('source-lang'),
   targetLang: $('target-lang'),
-  copyBtn: $('copy-btn')
+  copyBtn: $('copy-btn'),
+  autoDetect: $('auto-detect')
 }
 
 // ============================================
@@ -26,17 +27,17 @@ setInterval(updateOllamaStatus, 5000)
 // ============================================
 // Language Initialization
 // ============================================
+let allLanguages = []
+
 async function initLanguages() {
   const languages = await window.api.getLanguages()
+  allLanguages = languages
 
+  // Initialize source language options based on auto-detect state
+  updateSourceLangOptions()
+
+  // Add to target language
   languages.forEach(lang => {
-    // Add to source language (after "Detect Language")
-    const sourceOption = document.createElement('option')
-    sourceOption.value = lang.code
-    sourceOption.textContent = lang.name
-    elements.sourceLang.appendChild(sourceOption)
-
-    // Add to target language
     const targetOption = document.createElement('option')
     targetOption.value = lang.code
     targetOption.textContent = lang.name
@@ -47,7 +48,45 @@ async function initLanguages() {
   elements.targetLang.value = 'en'
 }
 
+function updateSourceLangOptions() {
+  const isAutoDetect = elements.autoDetect.checked
+
+  // Clear existing options
+  elements.sourceLang.innerHTML = ''
+
+  if (isAutoDetect) {
+    // Auto detect mode: show "Detect Language" and disable select
+    const autoOption = document.createElement('option')
+    autoOption.value = 'auto'
+    autoOption.textContent = 'Detect Language'
+    elements.sourceLang.appendChild(autoOption)
+    elements.sourceLang.disabled = true
+  } else {
+    // Manual mode: show all languages without auto option
+    allLanguages.forEach(lang => {
+      const option = document.createElement('option')
+      option.value = lang.code
+      option.textContent = lang.name
+      elements.sourceLang.appendChild(option)
+    })
+    elements.sourceLang.disabled = false
+
+    // Set a default value if available
+    if (allLanguages.length > 0) {
+      elements.sourceLang.value = allLanguages[0].code
+    }
+  }
+}
+
+// Listen to auto-detect toggle changes
+elements.autoDetect.addEventListener('change', () => {
+  updateSourceLangOptions()
+  // Re-process text with new settings
+  process()
+})
+
 initLanguages()
+
 
 // ============================================
 // Text Processing (Translate / Rewrite)
@@ -59,7 +98,21 @@ async function process() {
   if (!text) {
     elements.outputText.value = ''
     elements.outputText.classList.remove('loading')
+    // Reset detected language display
+    if (elements.autoDetect.checked) {
+      updateDetectedLanguageDisplay(null)
+    }
     return
+  }
+
+  // Detect language in auto mode before processing
+  if (elements.autoDetect.checked) {
+    try {
+      const detectedLang = await window.api.detectLanguage(text)
+      updateDetectedLanguageDisplay(detectedLang)
+    } catch (error) {
+      console.error('Language detection failed:', error)
+    }
   }
 
   // Show loading state
@@ -83,12 +136,30 @@ async function process() {
   }
 }
 
+function updateDetectedLanguageDisplay(detectedLanguage) {
+  if (!elements.autoDetect.checked) return
+
+  const autoOption = elements.sourceLang.querySelector('option[value="auto"]')
+  if (!autoOption) return
+
+  if (!detectedLanguage) {
+    autoOption.textContent = 'Detect Language'
+  } else {
+    // Display the detected language from backend API
+    autoOption.textContent = `Detected: ${detectedLanguage.name}`
+  }
+}
+
+
+
 elements.inputText.addEventListener('input', () => {
   clearTimeout(debounceTimer)
   debounceTimer = setTimeout(process, 500)
 })
 
+elements.sourceLang.addEventListener('change', process)
 elements.targetLang.addEventListener('change', process)
+
 
 // ============================================
 // Clipboard

@@ -2,8 +2,9 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('api', {
   checkOllamaStatus: () => ipcRenderer.invoke('ollama:check-status'),
-  processText: (text: string, sourceLang: string, targetLang: string) => 
+  processText: (text: string, sourceLang: string, targetLang: string) =>
     ipcRenderer.invoke('text:process', { text, sourceLang, targetLang }),
   copyToClipboard: (text: string) => ipcRenderer.invoke('clipboard:copy', text),
-  getLanguages: () => ipcRenderer.invoke('languages:get')
+  getLanguages: () => ipcRenderer.invoke('languages:get'),
+  detectLanguage: (text: string) => ipcRenderer.invoke('language:detect', text)
 })

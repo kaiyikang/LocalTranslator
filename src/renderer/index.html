@@ -13,7 +13,7 @@
 
   <header>
     <h1>Translator</h1>
-    
+
     <div class="ollama-status">
       <span>Ollama Connectivity</span>
       <div id="status-dot" class="status-dot"></div>
@@ -26,6 +26,10 @@
         <select id="source-lang">
           <option value="auto">Detect Language</option>
         </select>
+        <div class="auto-detect-toggle">
+          <input type="checkbox" id="auto-detect" checked>
+          <label for="auto-detect">Auto</label>
+        </div>
       </div>
       <textarea id="input-text" placeholder="Type here to translate..."></textarea>
     </div>

@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { getOllamaStatus } from '@usecase/checkStatus'
 import { processText } from '@usecase/processText'
-import { getSupportedLanguages } from '@usecase/getSupportedLanguages'
+import { getSupportedLanguages, detectLanguageFromText } from '@usecase/getSupportedLanguages'
 import { copyToClipboard } from '@usecase/copyToClipboard'
 import { join } from 'path'
 
@@ -42,6 +42,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('languages:get', () => {
     return getSupportedLanguages()
+  })
+
+  ipcMain.handle('language:detect', (_event, text: string) => {
+    return detectLanguageFromText(text)
   })
 
   createWindow()

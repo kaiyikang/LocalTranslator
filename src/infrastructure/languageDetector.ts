@@ -34,7 +34,10 @@ export function detectLanguage(text: string): LanguageInfo {
         lang.code === detectedCode || lang.code.startsWith(detectedCode)
     );
 
-    if (found) return found;
+    if (found) {
+        console.debug(`Language detection: Resolved to supported language: ${found.name} (${found.code})`);
+        return found;
+    }
 
     // Return detected code with generic name if not in our supported list
     return { code: detectedCode, name: detectedCode.toUpperCase() };
