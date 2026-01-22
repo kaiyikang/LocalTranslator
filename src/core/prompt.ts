@@ -21,10 +21,12 @@ export interface PromptParams {
   targetLang: string;
   targetCode: string;
   text: string;
+  template?: string; // Optional custom template, uses default if not provided
 }
 
 export function buildPrompt(params: PromptParams): string {
-  return TEMPLATE
+  const template = params.template || TEMPLATE;
+  return template
     .replace(/{SOURCE_LANG}/g, params.sourceLang)
     .replace(/{SOURCE_CODE}/g, params.sourceCode)
     .replace(/{TARGET_LANG}/g, params.targetLang)
@@ -36,10 +38,12 @@ export interface GrammarPromptParams {
   lang: string;
   langCode: string;
   text: string;
+  template?: string; // Optional custom template, uses default if not provided
 }
 
 export function buildGrammarPrompt(params: GrammarPromptParams): string {
-  return GRAMMAR_TEMPLATE
+  const template = params.template || GRAMMAR_TEMPLATE;
+  return template
     .replace(/{LANG}/g, params.lang)
     .replace(/{LANG_CODE}/g, params.langCode)
     .replace(/{TEXT}/g, params.text);
