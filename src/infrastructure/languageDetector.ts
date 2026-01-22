@@ -11,7 +11,7 @@ export interface LanguageInfo {
     name: string;
 }
 
-const defaultLang: LanguageInfo = { code: 'en', name: 'English' };
+const DEFAULT_LANG: LanguageInfo = { code: 'en', name: 'English' };
 
 /**
  * Mapping from ISO 639-3 (three-letter codes used by franc) 
@@ -55,13 +55,14 @@ const ISO_639_3_TO_639_1: Record<string, string> = {
  * @returns Language information with code and name
  */
 export function detectLanguage(text: string): LanguageInfo {
-    if (!text?.trim()) return defaultLang;
+
+    if (!text?.trim()) return DEFAULT_LANG;
 
     // Use franc to detect language (returns ISO 639-3 code)
     const detectedCode = franc(text, { minLength: 3 });
 
     if (!detectedCode || detectedCode === 'und') {
-        return defaultLang;
+        return DEFAULT_LANG;
     }
 
     // Convert ISO 639-3 to ISO 639-1 if mapping exists
