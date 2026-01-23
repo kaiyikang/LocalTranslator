@@ -34,6 +34,12 @@ app.whenReady().then(() => {
   ipcMain.handle('clipboard:read', () => readFromClipboard())
   ipcMain.handle('languages:get', () => getSupportedLanguages())
   ipcMain.handle('language:detect', (_event, text: string) => detectLanguageFromText(text))
+  ipcMain.handle('window:focus', () => {
+    if (mainWindow) {
+      mainWindow.show()
+      mainWindow.focus()
+    }
+  })
 
   createWindow()
 

@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('api', {
   readFromClipboard: () => ipcRenderer.invoke('clipboard:read'),
   getLanguages: () => ipcRenderer.invoke('languages:get'),
   detectLanguage: (text: string) => ipcRenderer.invoke('language:detect', text),
+  focusWindow: () => ipcRenderer.invoke('window:focus'),
   onClipboardPaste: (callback: (text: string) => void) => {
     ipcRenderer.on('clipboard:paste-to-input', (_event, text) => callback(text))
   }

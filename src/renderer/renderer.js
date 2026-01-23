@@ -127,6 +127,7 @@ async function process() {
       elements.targetLang.value
     )
     elements.outputText.value = result
+    window.api.focusWindow()
   } catch (error) {
     elements.outputText.value = 'Failed: ' + error.message
   } finally {
@@ -186,5 +187,5 @@ elements.copyBtn.addEventListener('click', () => {
 // ============================================
 window.api.onClipboardPaste((text) => {
   elements.inputText.value = text
-  process() // Trigger translation
+  process()
 })
