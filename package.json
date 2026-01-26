@@ -49,6 +49,7 @@
     "vitest": "^4.0.17"
   },
   "dependencies": {
-    "eld": "^2.0.2"
+    "eld": "^2.0.2",
+    "electron-store": "^11.0.2"
   }
 }

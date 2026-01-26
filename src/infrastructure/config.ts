@@ -3,6 +3,8 @@
  * Ollama and translator settings
  */
 
+import Store from 'electron-store';
+
 export interface Config {
   ollama: {
     baseUrl: string;
@@ -12,7 +14,7 @@ export interface Config {
   defaultTargetLang: string;
 }
 
-let config: Config = {
+const defaults: Config = {
   ollama: {
     baseUrl: 'http://localhost:11434',
     model: 'translategemma',
@@ -21,14 +23,22 @@ let config: Config = {
   defaultTargetLang: 'Chinese',
 };
 
+const store = new Store<Config>({ defaults });
+
 export function getConfig(): Config {
-  return config;
+  return store.store;
 }
 
 export function updateConfig(partial: Partial<Config>): void {
-  config = {
-    ...config,
-    ...partial,
-    ollama: { ...config.ollama, ...(partial.ollama || {}) },
-  };
+  if (partial.ollama) {
+    store.set('ollama', {
+      ...store.get('ollama'),
+      ...partial.ollama,
+    });
+  }
+
+  if (partial.defaultTargetLang) {
+    store.set('defaultTargetLang', partial.defaultTargetLang);
+  }
+
 }
