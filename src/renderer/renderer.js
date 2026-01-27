@@ -10,7 +10,8 @@ const elements = {
   sourceLang: $('source-lang'),
   targetLang: $('target-lang'),
   copyBtn: $('copy-btn'),
-  autoDetect: $('auto-detect')
+  autoDetect: $('auto-detect'),
+  settingsBtn: $('settings-btn')
 }
 
 // ============================================
@@ -188,4 +189,11 @@ elements.copyBtn.addEventListener('click', () => {
 window.api.onClipboardPaste((text) => {
   elements.inputText.value = text
   process()
+})
+
+// ============================================
+// Settings Button
+// ============================================
+elements.settingsBtn.addEventListener('click', () => {
+  window.api.openSettings()
 })

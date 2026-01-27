@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
+import type { Config } from '@infrastructure/config'
 
 contextBridge.exposeInMainWorld('api', {
   checkOllamaStatus: () => ipcRenderer.invoke('ollama:check-status'),
@@ -11,5 +12,11 @@ contextBridge.exposeInMainWorld('api', {
   focusWindow: () => ipcRenderer.invoke('window:focus'),
   onClipboardPaste: (callback: (text: string) => void) => {
     ipcRenderer.on('clipboard:paste-to-input', (_event, text) => callback(text))
-  }
+  },
+  // Config APIs
+  getConfig: () => ipcRenderer.invoke('config:get'),
+  updateConfig: (config: Partial<Config>) => ipcRenderer.invoke('config:update', config),
+  resetConfig: () => ipcRenderer.invoke('config:reset'),
+  openSettings: () => ipcRenderer.invoke('settings:open'),
+  closeSettings: () => ipcRenderer.invoke('settings:close')
 })
