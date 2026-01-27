@@ -1,32 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "node20",
-    "lib": [
-      "ES2020"
-    ],
-    "types": [
-      "node"
-    ],
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "types": ["node"],
     "strict": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
-      "@core/*": [
-        "core/*"
-      ],
-      "@infrastructure/*": [
-        "infrastructure/*"
-      ],
-      "@usecase/*": [
-        "usecase/*"
-      ]
+      "@core/*": ["core/*"],
+      "@infrastructure/*": ["infrastructure/*"],
+      "@usecase/*": ["usecase/*"]
     },
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

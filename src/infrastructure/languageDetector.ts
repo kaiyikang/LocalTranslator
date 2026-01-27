@@ -3,16 +3,15 @@
  * Uses eld (Efficient Language Detector) for automatic language detection
  */
 
-// @ts-expect-error - eld is an ESM module, but works fine with our build setup
-import eld from 'eld/medium';
-import { SUPPORTED_LANGUAGES } from '@core/languages';
+import eld from "eld/medium";
+import { SUPPORTED_LANGUAGES } from "@core/languages";
 
 export interface LanguageInfo {
-    code: string;
-    name: string;
+  code: string;
+  name: string;
 }
 
-const DEFAULT_LANG: LanguageInfo = { code: 'en', name: 'English' };
+const DEFAULT_LANG: LanguageInfo = { code: "en", name: "English" };
 
 /**
  * Detect language of given text using eld
@@ -20,35 +19,35 @@ const DEFAULT_LANG: LanguageInfo = { code: 'en', name: 'English' };
  * @returns Language information with code and name
  */
 export function detectLanguage(text: string): LanguageInfo {
+  if (!text?.trim()) {
+    return DEFAULT_LANG;
+  }
 
-    // Log input for debugging
-    const truncatedText = text?.length > 50 ? text.substring(0, 50) + '...' : text;
+  // Use eld to detect language (returns ISO 639-1 code directly)
+  const detectedCode = eld.detect(text);
 
-    if (!text?.trim()) {
-        return DEFAULT_LANG;
-    }
+  // Handle cases where eld returns empty string or no result
+  if (
+    !detectedCode ||
+    !detectedCode.language ||
+    detectedCode.language.trim() === ""
+  ) {
+    return DEFAULT_LANG;
+  }
 
-    // Use eld to detect language (returns ISO 639-1 code directly)
-    const detectedCode = eld.detect(text);
+  // Try to find in SUPPORTED_LANGUAGES
+  const found = SUPPORTED_LANGUAGES.find(
+    (lang) => lang.code === detectedCode.language,
+  );
 
-    // Handle cases where eld returns empty string or no result
-    if (!detectedCode || !detectedCode.language || detectedCode.language.trim() === '') {
-        return DEFAULT_LANG;
-    }
+  if (found) {
+    return found;
+  }
 
-    // Try to find in SUPPORTED_LANGUAGES
-    const found = SUPPORTED_LANGUAGES.find((lang) =>
-        lang.code === detectedCode.language
-    );
-
-    if (found) {
-        return found;
-    }
-
-    // Return detected code with generic name if not in our supported list
-    const result = {
-        code: detectedCode.language,
-        name: detectedCode.language.toUpperCase()
-    };
-    return result;
+  // Return detected code with generic name if not in our supported list
+  const result = {
+    code: detectedCode.language,
+    name: detectedCode.language.toUpperCase(),
+  };
+  return result;
 }
