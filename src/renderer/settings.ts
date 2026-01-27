@@ -21,19 +21,7 @@ const elements = {
   resetBtn: document.getElementById('reset-btn'),
   testBtn: document.getElementById('test-btn'),
   testStatus: document.getElementById('test-status'),
-  toast: document.getElementById('toast'),
 };
-
-// Show toast notification
-function showToast(message, type = 'success') {
-  elements.toast.textContent = message;
-  elements.toast.className = `toast ${type}`;
-  elements.toast.classList.add('show');
-
-  setTimeout(() => {
-    elements.toast.classList.remove('show');
-  }, 3000);
-}
 
 // Load configuration from main process
 async function loadConfig() {
@@ -48,7 +36,6 @@ async function loadConfig() {
     }
   } catch (error) {
     console.error('Failed to load config:', error);
-    showToast('Failed to load configuration', 'error');
   }
 }
 
@@ -65,10 +52,9 @@ async function saveConfig() {
     };
 
     await window.api.updateConfig(config);
-    showToast('Settings saved successfully', 'success');
+    closeWindow();
   } catch (error) {
     console.error('Failed to save config:', error);
-    showToast('Failed to save configuration', 'error');
   }
 }
 
@@ -85,11 +71,8 @@ async function resetConfig() {
     elements.ollamaModel.value = defaultConfig.ollama.model;
     elements.ollamaTimeout.value = defaultConfig.ollama.timeout;
     elements.defaultTargetLang.value = defaultConfig.defaultTargetLang;
-
-    showToast('Settings reset to defaults', 'success');
   } catch (error) {
     console.error('Failed to reset config:', error);
-    showToast('Failed to reset configuration', 'error');
   }
 }
 
