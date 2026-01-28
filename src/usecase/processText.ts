@@ -21,25 +21,30 @@ export interface ProcessOutput {
 export async function processText(input: ProcessInput): Promise<ProcessOutput> {
   const { text, sourceLang, targetLang } = input;
 
-  // Determine if auto-detect is enabled
-  const autoDetect = sourceLang === 'auto';
+  try {
+    // Determine if auto-detect is enabled
+    const autoDetect = sourceLang === 'auto';
 
-  // Determine actual source language
-  const actualSource = autoDetect
-    ? detectLanguage(text).code
-    : sourceLang;
+    // Determine actual source language
+    const actualSource = autoDetect
+      ? detectLanguage(text).code
+      : sourceLang;
 
-  // Route: same language → rewrite, different → translate
-  if (actualSource === targetLang) {
-    const output = await rewriteText({ text, lang: targetLang });
-    return { result: output.rewritten, mode: 'rewrite' };
-  } else {
-    const output = await translateText({
-      text,
-      autoDetect,
-      sourceLang: autoDetect ? undefined : sourceLang,
-      targetLang
-    });
-    return { result: output.translated, mode: 'translate' };
+    // Route: same language → rewrite, different → translate
+    if (actualSource === targetLang) {
+      const output = await rewriteText({ text, lang: targetLang });
+      return { result: output.rewritten, mode: 'rewrite' };
+    } else {
+      const output = await translateText({
+        text,
+        autoDetect,
+        sourceLang: autoDetect ? undefined : sourceLang,
+        targetLang
+      });
+      return { result: output.translated, mode: 'translate' };
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Processing failed: ${message}`);
   }
 }
