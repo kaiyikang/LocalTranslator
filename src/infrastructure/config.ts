@@ -20,7 +20,7 @@ const defaults: Config = {
     model: 'translategemma',
     timeout: 30000,
   },
-  defaultTargetLang: 'Chinese',
+  defaultTargetLang: 'zh',
 };
 
 const store = new Store<Config>({

@@ -31,6 +31,7 @@ setInterval(updateOllamaStatus, 5000);
 let allLanguages = [];
 
 async function initLanguages() {
+  // 获取语言列表
   const languages = await window.api.getLanguages();
   allLanguages = languages;
 
@@ -45,8 +46,9 @@ async function initLanguages() {
     elements.targetLang.appendChild(targetOption);
   });
 
-  // Default target language to English
-  elements.targetLang.value = 'en';
+  // Set default target language from config
+  const config = await window.api.getConfig();
+  elements.targetLang.value = config.defaultTargetLang || 'en';
 }
 
 function updateSourceLangOptions() {

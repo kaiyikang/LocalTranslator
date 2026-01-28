@@ -7,7 +7,7 @@ const defaultConfig = {
     model: 'translategemma',
     timeout: 30000,
   },
-  defaultTargetLang: 'Chinese',
+  defaultTargetLang: 'zh',
 };
 
 // DOM Elements
