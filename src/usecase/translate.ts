@@ -3,10 +3,10 @@
  * Orchestrates language detection, prompt building, and translation
  */
 
-import { buildPrompt } from "@core/prompt";
-import { getLanguageByCode } from "@core/languages";
-import { sendToOllama, checkConnection } from "@infrastructure/ollamaClient";
-import { detectLanguage } from "@infrastructure/languageDetector";
+import { buildPrompt } from '@core/prompt';
+import { getLanguageByCode } from '@core/languages';
+import { sendToOllama, checkConnection } from '@infrastructure/ollamaClient';
+import { detectLanguage } from '@infrastructure/languageDetector';
 
 export interface TranslateInput {
   text: string;
@@ -25,9 +25,7 @@ export interface TranslateOutput {
 /**
  * Translate text from source language to target language
  */
-export async function translateText(
-  input: TranslateInput,
-): Promise<TranslateOutput> {
+export async function translateText(input: TranslateInput): Promise<TranslateOutput> {
   const { text, autoDetect, sourceLang, targetLang } = input;
 
   let source;
@@ -35,7 +33,7 @@ export async function translateText(
     source = detectLanguage(text);
   } else {
     if (!sourceLang) {
-      throw new Error("sourceLang is required when autoDetect is false");
+      throw new Error('sourceLang is required when autoDetect is false');
     }
     source = getLanguageByCode(sourceLang) || {
       code: sourceLang,
@@ -52,7 +50,7 @@ export async function translateText(
   // Check Ollama connection before sending
   const isConnected = await checkConnection();
   if (!isConnected) {
-    throw new Error("Cannot connect to Ollama service. Please make sure Ollama is running.");
+    throw new Error('Cannot connect to Ollama service. Please make sure Ollama is running.');
   }
 
   // Build and send prompt

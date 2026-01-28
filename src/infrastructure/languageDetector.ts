@@ -3,15 +3,15 @@
  * Uses eld (Efficient Language Detector) for automatic language detection
  */
 
-import eld from "eld/medium";
-import { SUPPORTED_LANGUAGES } from "@core/languages";
+import eld from 'eld/medium';
+import { SUPPORTED_LANGUAGES } from '@core/languages';
 
 export interface LanguageInfo {
   code: string;
   name: string;
 }
 
-const DEFAULT_LANG: LanguageInfo = { code: "en", name: "English" };
+const DEFAULT_LANG: LanguageInfo = { code: 'en', name: 'English' };
 
 /**
  * Detect language of given text using eld
@@ -27,18 +27,12 @@ export function detectLanguage(text: string): LanguageInfo {
   const detectedCode = eld.detect(text);
 
   // Handle cases where eld returns empty string or no result
-  if (
-    !detectedCode ||
-    !detectedCode.language ||
-    detectedCode.language.trim() === ""
-  ) {
+  if (!detectedCode || !detectedCode.language || detectedCode.language.trim() === '') {
     return DEFAULT_LANG;
   }
 
   // Try to find in SUPPORTED_LANGUAGES
-  const found = SUPPORTED_LANGUAGES.find(
-    (lang) => lang.code === detectedCode.language,
-  );
+  const found = SUPPORTED_LANGUAGES.find((lang) => lang.code === detectedCode.language);
 
   if (found) {
     return found;

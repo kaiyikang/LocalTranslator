@@ -32,7 +32,8 @@ async function loadConfig() {
       elements.ollamaBaseUrl.value = config.ollama?.baseUrl || defaultConfig.ollama.baseUrl;
       elements.ollamaModel.value = config.ollama?.model || defaultConfig.ollama.model;
       elements.ollamaTimeout.value = config.ollama?.timeout || defaultConfig.ollama.timeout;
-      elements.defaultTargetLang.value = config.defaultTargetLang || defaultConfig.defaultTargetLang;
+      elements.defaultTargetLang.value =
+        config.defaultTargetLang || defaultConfig.defaultTargetLang;
     }
   } catch (error) {
     console.error('Failed to load config:', error);

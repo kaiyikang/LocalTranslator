@@ -47,9 +47,7 @@ export interface LanguageInfo {
  * @returns Language information or null if not found
  */
 export function getLanguageByName(name: string): LanguageInfo | null {
-  const found = SUPPORTED_LANGUAGES.find((lang) =>
-    lang.name.toLowerCase() === name.toLowerCase()
-  );
+  const found = SUPPORTED_LANGUAGES.find((lang) => lang.name.toLowerCase() === name.toLowerCase());
   return found || null;
 }
 
@@ -59,8 +57,8 @@ export function getLanguageByName(name: string): LanguageInfo | null {
  * @returns Language information or null if not found
  */
 export function getLanguageByCode(code: string): LanguageInfo | null {
-  const found = SUPPORTED_LANGUAGES.find((lang) =>
-    lang.code === code || lang.code.startsWith(code)
+  const found = SUPPORTED_LANGUAGES.find(
+    (lang) => lang.code === code || lang.code.startsWith(code),
   );
   return found || null;
 }

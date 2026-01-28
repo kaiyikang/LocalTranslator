@@ -9,7 +9,7 @@ import { detectLanguage } from '@infrastructure/languageDetector';
 
 export interface ProcessInput {
   text: string;
-  sourceLang: string;  // 可以是 'auto' 或具体的语言代码
+  sourceLang: string; // 可以是 'auto' 或具体的语言代码
   targetLang: string;
 }
 
@@ -26,9 +26,7 @@ export async function processText(input: ProcessInput): Promise<ProcessOutput> {
     const autoDetect = sourceLang === 'auto';
 
     // Determine actual source language
-    const actualSource = autoDetect
-      ? detectLanguage(text).code
-      : sourceLang;
+    const actualSource = autoDetect ? detectLanguage(text).code : sourceLang;
 
     // Route: same language → rewrite, different → translate
     if (actualSource === targetLang) {
@@ -39,7 +37,7 @@ export async function processText(input: ProcessInput): Promise<ProcessOutput> {
         text,
         autoDetect,
         sourceLang: autoDetect ? undefined : sourceLang,
-        targetLang
+        targetLang,
       });
       return { result: output.translated, mode: 'translate' };
     }

@@ -3,10 +3,10 @@
  * Orchestrates language detection, grammar prompt building, and rewriting
  */
 
-import { buildGrammarPrompt } from "@core/prompt";
-import { getLanguageByName } from "@core/languages";
-import { sendToOllama, checkConnection } from "@infrastructure/ollamaClient";
-import { detectLanguage } from "@infrastructure/languageDetector";
+import { buildGrammarPrompt } from '@core/prompt';
+import { getLanguageByName } from '@core/languages';
+import { sendToOllama, checkConnection } from '@infrastructure/ollamaClient';
+import { detectLanguage } from '@infrastructure/languageDetector';
 
 export interface RewriteInput {
   text: string;
@@ -27,14 +27,14 @@ export async function rewriteText(input: RewriteInput): Promise<RewriteOutput> {
 
   // Detect or use provided language
   const language =
-    langName && langName !== "auto"
-      ? getLanguageByName(langName) || { code: "en", name: langName }
+    langName && langName !== 'auto'
+      ? getLanguageByName(langName) || { code: 'en', name: langName }
       : detectLanguage(text);
 
   // Check Ollama connection before sending
   const isConnected = await checkConnection();
   if (!isConnected) {
-    throw new Error("Cannot connect to Ollama service. Please make sure Ollama is running.");
+    throw new Error('Cannot connect to Ollama service. Please make sure Ollama is running.');
   }
 
   // Build and send grammar correction prompt

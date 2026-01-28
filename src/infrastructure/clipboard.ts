@@ -10,8 +10,8 @@ import { clipboard } from 'electron';
  * @returns The text content from clipboard, or empty string if clipboard is empty
  */
 export function readFromClipboard(): string {
-    const text = clipboard.readText();
-    return text || '';
+  const text = clipboard.readText();
+  return text || '';
 }
 
 /**
@@ -19,7 +19,7 @@ export function readFromClipboard(): string {
  * @param text The text to copy to clipboard
  */
 export function copyToClipboard(text: string): void {
-    clipboard.writeText(text);
+  clipboard.writeText(text);
 }
 
 /**
@@ -27,5 +27,5 @@ export function copyToClipboard(text: string): void {
  * @returns True if clipboard has text content
  */
 export function hasClipboardText(): boolean {
-    return clipboard.has('text/plain');
+  return clipboard.has('text/plain');
 }

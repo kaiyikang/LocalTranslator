@@ -1,10 +1,10 @@
-import { getUniqueLanguages } from '@core/languages'
-import { detectLanguage } from '@infrastructure/languageDetector'
+import { getUniqueLanguages } from '@core/languages';
+import { detectLanguage } from '@infrastructure/languageDetector';
 
 export function getSupportedLanguages() {
-    return getUniqueLanguages()
+  return getUniqueLanguages();
 }
 
 export function detectLanguageFromText(text: string) {
-    return detectLanguage(text)
+  return detectLanguage(text);
 }
