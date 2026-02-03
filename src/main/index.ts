@@ -7,7 +7,7 @@ import { readFromClipboard } from '@usecase/readFromClipboard';
 import { getConfig, updateConfig, resetConfig } from '@infrastructure/config';
 import { join } from 'path';
 
-console.log('配置文件目录:', app.getPath('userData'));
+console.log('Configuration File Dir:', app.getPath('userData'));
 
 let mainWindow: BrowserWindow | null = null;
 let settingsWindow: BrowserWindow | null = null;

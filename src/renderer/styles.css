@@ -96,19 +96,23 @@ h1 {
 .container {
   display: flex;
   flex: 1;
-  padding: 10px;
-  gap: 10px;
+  padding: 15px;
+  gap: 15px;
   height: 100%;
-  min-height: 0;
+  min-height: 0;    /* 关键：允许 Flex 项目收缩，不被内容撑开 */
+  overflow: hidden; /* 确保内部不会出现多余滚动条 */
 }
 
 @media (max-width: 700px) {
   .container {
-    flex-direction: column;
+    flex-direction: column; /* 手机模式改为上下排列 */
+    overflow-y: auto;       /* 允许页面滚动 */
   }
 
-  .input-panel {
-    max-height: 25vh;
+  .panel {
+    flex: none;    /* 取消 flex 自适应 */
+    width: 100%;   /* 宽度占满 */
+    height: 300px; /* 给上下两个框设定完全相同的高度 */
   }
 
 }
@@ -121,16 +125,15 @@ h1 {
 
 /* Panel */
 .panel {
-  flex: 1;
+  flex: 1 1 0;      /* 左右 1:1 等分 */
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* 让内部的 toolbar 和 textarea 垂直排列 */
   background-color: #1e1e1e;
   border-radius: 8px;
   border: 1px solid #333;
   position: relative;
-  transition: border-color 0.2s;
+  height: 100%;     /* 强制面板撑满 container 高度 */
   min-width: 0;
-
 }
 
 .panel:focus-within {
@@ -139,7 +142,8 @@ h1 {
 
 /* Toolbar */
 .toolbar {
-  padding: 10px 15px;
+  height: 48px;      /* 明确设置一个高度，比如 48px */
+  padding: 0 15px;   /* 垂直 padding 设为 0，靠 height 撑起 */
   border-bottom: 1px solid #333;
   flex-shrink: 0;
   display: flex;
@@ -229,7 +233,6 @@ select:disabled:hover {
 }
 
 
-/* Textarea */
 textarea {
   flex: 1;
   width: 100%;
@@ -241,7 +244,11 @@ textarea {
   line-height: 1.5;
   resize: none;
   outline: none;
+
+  display: block;  /* 消除行内元素间隙 */
+  margin: 0;       /* 消除浏览器默认边距 */
 }
+
 
 /* Loading state for output textarea */
 textarea.loading {
