@@ -5,6 +5,28 @@
 
 import Store from 'electron-store';
 
+export const AVAILABLE_MODELS = [
+  // Basic
+  { label: 'TranslateGemma 4B (Latest/Fast)', value: 'translategemma:latest' },
+  { label: 'TranslateGemma 12B (Balanced)', value: 'translategemma:12b' },
+  { label: 'TranslateGemma 27B (High Quality)', value: 'translategemma:27b' },
+
+  // 4B
+  { label: 'TranslateGemma 4B (q4_K_M)', value: 'translategemma:4b-it-q4_K_M' },
+  { label: 'TranslateGemma 4B (High Precision q8)', value: 'translategemma:4b-it-q8_0' },
+  { label: 'TranslateGemma 4B (Full bf16)', value: 'translategemma:4b-it-bf16' },
+
+  // 12B
+  { label: 'TranslateGemma 12B (q4_K_M)', value: 'translategemma:12b-it-q4_K_M' },
+  { label: 'TranslateGemma 12B (High Precision q8)', value: 'translategemma:12b-it-q8_0' },
+  { label: 'TranslateGemma 12B (Full bf16)', value: 'translategemma:12b-it-bf16' },
+
+  // 27B
+  { label: 'TranslateGemma 27B (q4_K_M)', value: 'translategemma:27b-it-q4_K_M' },
+  { label: 'TranslateGemma 27B (High Precision q8)', value: 'translategemma:27b-it-q8_0' },
+  { label: 'TranslateGemma 27B (Full bf16)', value: 'translategemma:27b-it-bf16' },
+];
+
 export interface Config {
   ollama: {
     baseUrl: string;
@@ -17,7 +39,7 @@ export interface Config {
 const defaults: Config = {
   ollama: {
     baseUrl: 'http://localhost:11434',
-    model: 'translategemma',
+    model: 'translategemma:latest',
     timeout: 30000,
   },
   defaultTargetLang: 'zh',
